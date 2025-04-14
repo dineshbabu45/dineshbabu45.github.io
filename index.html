@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dinesh Babu M - Portfolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* General Styles */
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #007BFF, #6C63FF);
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        h1, h2, h3 {
+            color: #fff;
+        }
+        a {
+            color: #FFB400;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Header */
+        header {
+            text-align: center;
+            padding: 50px 20px;
+            background: rgba(0, 0, 0, 0.7);
+        }
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        header p {
+            font-size: 1.2em;
+            margin-top: 0;
+        }
+
+        /* Container */
+        .container {
+            width: 90%;
+            max-width: 1100px;
+            margin: auto;
+            overflow: hidden;
+            padding: 30px 0;
+        }
+
+        /* Section Styles */
+        section {
+            margin-bottom: 40px;
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        section h2 {
+            font-size: 1.8em;
+            border-bottom: 3px solid #007BFF;
+            display: inline-block;
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        /* Skills Section */
+        .skills-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .skill-item {
+            padding: 10px 15px;
+            background: #F4F4F9;
+            border: 2px solid #007BFF;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .skill-item:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Card Layouts for Experience/Projects */
+        .card {
+            background: #F4F4F9;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 5px solid #007BFF;
+            transition: transform 0.3s;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+        }
+        .card h3 {
+            margin: 0 0 5px;
+            color: #007BFF;
+        }
+        .card p {
+            margin: 5px 0 0;
+            color: #666;
+        }
+
+        /* Contact Section */
+        .contact-info a {
+            display: inline-block;
+            margin-top: 10px;
+            font-weight: 600;
+            background: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.3s;
+        }
+        .contact-info a:hover {
+            background: #0056b3;
+            transform: scale(1.1);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <h1>Dinesh Babu M</h1>
+        <p>Software Engineer | Full-Stack Developer</p>
+    </header>
+
+    <!-- About Section -->
+    <div class="container">
+        <section>
+            <h2>About Me</h2>
+            <p>
+                I am a skilled software engineer with 4+ years of expertise in full-stack development, specializing in 
+                <strong>C#, .NET, Angular, and AWS</strong>. My passion lies in automating workflows, optimizing system performance, 
+                and delivering scalable solutions to real-world problems.
+            </p>
+        </section>
+
+        <!-- Skills Section -->
+        <section>
+            <h2>Skills</h2>
+            <ul class="skills-list">
+                <li class="skill-item">C#</li>
+                <li class="skill-item">.NET Core</li>
+                <li class="skill-item">ASP.NET MVC</li>
+                <li class="skill-item">Entity Framework</li>
+                <li class="skill-item">Angular</li>
+                <li class="skill-item">React</li>
+                <li class="skill-item">SQL Server</li>
+                <li class="skill-item">AWS</li>
+            </ul>
+        </section>
+
+        <!-- Experience Section -->
+        <section>
+            <h2>Experience</h2>
+            <div class="card">
+                <h3>Software Engineer I - OEConnections</h3>
+                <p>May 2024 – Present</p>
+                <p>Automated labor rate and tax calculations, improving efficiency by 50%. Optimized PII data processing in Azure Data Lake.</p>
+            </div>
+            <div class="card">
+                <h3>Software Engineer - Aspire Systems</h3>
+                <p>Jan 2021 – May 2024</p>
+                <p>Enhanced customer accessibility with RESTful APIs and improved system scalability by 25% through microservices migration.</p>
+            </div>
+        </section>
+
+        <!-- Projects Section -->
+        <section>
+            <h2>Projects</h2>
+            <div class="card">
+                <h3>Labor Rate and Tax Guide</h3>
+                <p>Developed a cloud-based system for real-time labor rates and tax calculations, improving decision-making speed by 40%.</p>
+            </div>
+            <div class="card">
+                <h3>Mortgage Release App</h3>
+                <p>Streamlined workflows and expedited asset release processes by 40% through API integrations and event-driven workflows.</p>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section>
+            <h2>Contact Me</h2>
+            <div class="contact-info">
+                <p>Email: <a href="mailto:dinesh45babu@gmail.com">dinesh45babu@gmail.com</a></p>
+                <p>Phone: +91 9751400677</p>
+                <a href="https://www.linkedin.com/in/dinesh-babu-m-b92949166/" target="_blank">Visit LinkedIn Profile</a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Dinesh Babu M. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
