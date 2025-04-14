@@ -1,132 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dinesh Babu M - Software Engineer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dinesh Babu M - Portfolio</title>
   <!-- Google Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <!-- CSS Styles -->
   <style>
-    /* General Reset & Typography */
+    /* Reset & Base Styling */
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
+    }
+    html {
+      scroll-behavior: smooth;
     }
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(135deg, #ff416c, #ff4b2b);
       color: #333;
+      background: #f0f0f0;
       line-height: 1.6;
-      overflow-x: hidden;
-    }
-    h1, h2, h3 {
-      font-weight: 700;
-      margin-bottom: 15px;
-    }
-    p {
-      margin-bottom: 15px;
     }
     a {
       text-decoration: none;
-      color: #ffb400;
-      transition: color 0.3s;
-    }
-    a:hover {
-      color: #fff;
+      color: inherit;
     }
 
-    /* Header */
-    header {
-      background: rgba(0, 0, 0, 0.6);
-      padding: 50px 20px;
-      text-align: center;
-      position: relative;
-      overflow: hidden;
+    /* Navigation */
+    nav {
+      width: 100%;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.7);
+      padding: 10px 0;
+      transition: background 0.3s;
     }
-    /* Profile Image styling */
+    nav ul {
+      display: flex;
+      justify-content: center;
+      list-style: none;
+    }
+    nav li {
+      margin: 0 20px;
+    }
+    nav a {
+      font-size: 1em;
+      font-weight: 600;
+      color: #fff;
+      transition: color 0.3s;
+    }
+    nav a:hover {
+      color: #ffb400;
+    }
+
+    /* Header (Hero Section) */
+    header {
+      height: 100vh;
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      position: relative;
+      text-align: center;
+      padding: 20px;
+    }
+    header::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 50px;
+      background: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0nMTAwJScgaGVpZ2h0PSc1MCcgdmlld0JveD0nMCAwIDEwMCA1MCcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJz48cGF0aCBkPSdNMCwwQzM0LjcsMzAgNjUsMCw5MCwxMCwxMDAsNTBWMC44QzY0LjcsMTIuNywzNS44LDAsMCwweiIgZmlsbD0nI2ZlZmVmZScvPjwvc3ZnPg==') no-repeat bottom;
+      background-size: cover;
+    }
     header .profile-pic {
       width: 150px;
       height: 150px;
-      border: 5px solid #fff;
       border-radius: 50%;
+      border: 5px solid #fff;
       object-fit: cover;
       margin-bottom: 20px;
+      animation: fadeIn 1.5s ease-in-out;
     }
     header h1 {
-      font-size: 2.8em;
+      font-size: 3em;
       color: #fff;
+      animation: fadeIn 2s ease-in-out;
     }
     header p {
       font-size: 1.2em;
-      color: #ddd;
+      color: #eee;
+      margin-top: 10px;
+      animation: fadeIn 2.5s ease-in-out;
     }
 
-    /* Main Container */
+    /* Main Content Container */
     .container {
-      width: 90%;
       max-width: 1100px;
-      margin: 30px auto;
-      padding: 20px;
-      background: #fff;
-      border-radius: 15px;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      margin: 100px auto 50px;
+      padding: 0 20px;
     }
-    
-    /* Section Titles */
+    section {
+      margin: 50px 0;
+      padding: 40px 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: slideUp 0.8s forwards;
+    }
+    section:nth-child(even) {
+      animation-delay: 0.2s;
+    }
+    section:nth-child(odd) {
+      animation-delay: 0.4s;
+    }
     section h2 {
-      border-bottom: 3px solid #ff416c;
+      margin-bottom: 20px;
       padding-bottom: 5px;
+      border-bottom: 2px solid #ff416c;
       color: #333;
     }
 
-    /* About Section */
-    #about {
-      text-align: center;
-    }
+    /* About */
     #about p {
       font-size: 1.1em;
+      text-align: center;
     }
 
-    /* Skills Section */
+    /* Skills */
     #skills ul {
       display: flex;
       flex-wrap: wrap;
-      list-style: none;
-      gap: 10px;
       justify-content: center;
-      padding: 0;
+      list-style: none;
+      gap: 15px;
     }
     #skills li {
       background: #ffb400;
       color: #fff;
-      padding: 10px 15px;
-      border-radius: 8px;
+      padding: 10px 20px;
+      border-radius: 25px;
       font-weight: 600;
-      transition: transform 0.3s, box-shadow 0.3s;
+      transition: transform 0.3s;
     }
     #skills li:hover {
       transform: scale(1.1);
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 
-    /* Card Layout for Experience & Projects */
+    /* Cards for Experience & Projects */
     .card {
-      background: #f9f9f9;
-      border-left: 5px solid #ff416c;
+      margin-bottom: 25px;
       padding: 20px;
-      margin: 20px 0;
+      border-left: 5px solid #ff416c;
+      background: #fefefe;
       border-radius: 8px;
       transition: transform 0.3s, box-shadow 0.3s;
     }
     .card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 18px rgba(0, 0, 0, 0.15);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.15);
     }
     .card h3 {
-      color: #ff416c;
       margin-bottom: 10px;
+      color: #ff416c;
     }
     .card p, .card ul {
       color: #666;
@@ -135,19 +179,18 @@
       margin-left: 20px;
     }
 
-    /* Contact Section */
+    /* Contact */
     #contact {
       text-align: center;
     }
     #contact a.button {
       display: inline-block;
+      padding: 12px 30px;
       background: #ff416c;
       color: #fff;
-      padding: 12px 25px;
       border-radius: 30px;
       font-weight: 600;
       transition: background 0.3s, transform 0.3s;
-      margin-top: 10px;
     }
     #contact a.button:hover {
       background: #e63946;
@@ -158,31 +201,51 @@
     footer {
       text-align: center;
       padding: 20px;
-      background: rgba(0, 0, 0, 0.8);
-      color: #fff;
-      margin-top: 30px;
+      background: #222;
+      color: #ccc;
     }
 
-    /* Responsive Design */
+    /* Animations */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
     @media (max-width: 768px) {
       header h1 {
-        font-size: 2.2em;
+        font-size: 2.5em;
       }
-      header p {
-        font-size: 1em;
+      nav li {
+        margin: 0 10px;
       }
-      .container {
-        margin: 20px;
-        padding: 15px;
+      #skills ul {
+        flex-direction: column;
+        align-items: center;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Header Section with Profile Picture -->
+  <!-- Navigation Bar -->
+  <nav>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <!-- Header Section -->
   <header>
-    <img src="Media.jpg" alt="Profile Picture" class="profile-pic" />
+    <img src="Media.jpg" alt="Profile Picture" class="profile-pic">
     <h1>Dinesh Babu M</h1>
     <p>Software Engineer | Full-Stack Developer</p>
   </header>
@@ -194,11 +257,12 @@
     <section id="about">
       <h2>About Me</h2>
       <p>
-        I am a passionate software engineer with 4.5+ years of experience in full-stack development, specializing in
-        <strong>C#, .NET, Angular, React, and AWS</strong>. I excel at automating processes, optimizing system performance, and delivering scalable solutions that drive business success.
+        I am a passionate software engineer with 4.5+ years of experience in full-stack development specializing in 
+        <strong>C#, .NET, Angular, React, and AWS</strong>. I excel at automating processes, optimizing system performance, 
+        and delivering scalable solutions to drive business success.
       </p>
     </section>
-
+    
     <!-- Skills Section -->
     <section id="skills">
       <h2>Skills</h2>
@@ -216,58 +280,53 @@
         <li>Terraform</li>
       </ul>
     </section>
-
+    
     <!-- Experience Section -->
     <section id="experience">
       <h2>Experience</h2>
-      
       <div class="card">
         <h3>Software Engineer I – OEConnections, Chennai</h3>
         <p><em>May 2024 – Present</em></p>
         <ul>
-          <li>Automated labor rate and tax calculation processes, improving operational efficiency by 50%.</li>
+          <li>Automated labor rate and tax calculations for 50% improved efficiency.</li>
           <li>Processed over 5 million XML files in Azure Data Lake, optimizing sensitive PII data removal by 30%.</li>
         </ul>
       </div>
-      
       <div class="card">
         <h3>Software Engineer – Aspire Systems, Chennai</h3>
         <p><em>Jan 2021 – May 2024</em></p>
         <ul>
-          <li>Developed RESTful APIs that increased external service adoption by 20%.</li>
-          <li>Led a microservices architecture migration that reduced response times by 25%.</li>
+          <li>Developed RESTful APIs increasing external service adoption by 20%.</li>
+          <li>Led microservices migration, reducing response times by 25%.</li>
         </ul>
       </div>
-      
       <div class="card">
         <h3>Intern Engineer – Aspire Systems, Chennai</h3>
         <p><em>Oct 2020 – Jan 2021</em></p>
         <ul>
-          <li>Designed an online shopping portal using .NET Core Web API and SQL Server with OAuth and Single-Sign-On authentication.</li>
-          <li>Collaborated with senior engineers to develop innovative solutions.</li>
+          <li>Designed an online shopping portal using .NET Core Web API and SQL Server.</li>
+          <li>Implemented OAuth and Single-Sign-On authentication.</li>
         </ul>
       </div>
     </section>
-
+    
     <!-- Projects Section -->
     <section id="projects">
       <h2>Projects</h2>
-      
       <div class="card">
         <h3>Labor Rate and Tax Guide</h3>
         <p>
-          Spearheaded the development of a cloud-based system that offers real-time labor rates and tax calculations, accelerating decision-making speed by 40% and reducing processing time by 30%.
+          Developed a cloud-based system that offers real-time labor rates and tax calculations, accelerating decision-making speed by 40% and reducing processing time by 30%.
         </p>
       </div>
-      
       <div class="card">
         <h3>Mortgage Release App</h3>
         <p>
-          Developed a streamlined workflow that automated asset release processes, expediting loan payoff and cutting manual efforts by 60%. Integrated multiple APIs for seamless operations.
+          Automated asset release processes, expediting loan payoff workflows and reducing manual efforts by 60% through seamless API integrations.
         </p>
       </div>
     </section>
-
+    
     <!-- Contact Section -->
     <section id="contact">
       <h2>Contact Me</h2>
@@ -275,13 +334,13 @@
       <p>Phone: +91 9751400677</p>
       <a class="button" href="https://www.linkedin.com/in/dinesh-babu-m-b92949166/" target="_blank">Visit My LinkedIn Profile</a>
     </section>
-
+    
   </div>
 
   <!-- Footer -->
   <footer>
     <p>&copy; 2025 Dinesh Babu M. All Rights Reserved.</p>
   </footer>
-
+  
 </body>
 </html>
