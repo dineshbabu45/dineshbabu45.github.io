@@ -113,6 +113,8 @@ class Program
                 if (!string.IsNullOrEmpty(openAIApiKey))
                 {
                     var aiOptions = services.GetRequiredService<IOptions<AIAnalysisOptions>>();
+                    
+                logger.LogInformation("Using AI-powered analysis Open APi with {OpenAPiKey}", openAIApiKey);
                     aiOptions.Value.OpenAIApiKey = openAIApiKey;
                 }
                 
