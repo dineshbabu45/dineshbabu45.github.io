@@ -297,4 +297,4 @@ For issues and feature requests, please use the [GitHub Issues](https://github.c
 
 ---
 
-**Note**: This is a demonstration project showcasing AI-powered code review capabilities. For production use, consider additional security measures and thorough testing in your specific environment.
+**Note**: This project demonstrates a complete solution to the problem of manually adding analyzers for each issue type. The AI-powered approach automatically detects all categories of issues without requiring manual rule creation, providing a scalable and maintainable solution for automated code review. See [MIGRATION.md](MIGRATION.md) for details on the transformation from manual to AI-powered analysis.
