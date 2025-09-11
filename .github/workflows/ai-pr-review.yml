@@ -31,7 +31,7 @@ jobs:
       - name: Run AI Pull Request Review
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OPENAI_API_KEY: "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"
+          OPENAI_API_KEY: ${{secrets.OPENAI_API_KEY}}
         run: |
           dotnet run --project src/PullRequestReviewAgent.Core \
             ${{ github.repository_owner }} \
