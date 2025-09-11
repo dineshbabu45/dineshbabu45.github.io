@@ -117,7 +117,7 @@ class Program
                 logger.LogInformation("Using AI-powered analysis Open APi with {OpenAPiKey}", openAIApiKey);
                     aiOptions.Value.OpenAIApiKey = openAIApiKey;
                 }
-                
+                logger.LogInformation("Calling Analyzer");
                 prAnalyzer.RegisterAnalyzer(aiAnalyzer);
                 logger.LogInformation("Using AI-powered analysis with {AnalyzerName}", aiAnalyzer.Name);
             }
