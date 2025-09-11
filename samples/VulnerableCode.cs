@@ -1,5 +1,7 @@
 using System;
 using System.Data.SqlClient;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace SampleCode
 {
@@ -7,6 +9,7 @@ namespace SampleCode
     public class VulnerableUserService
     {
         private readonly string connectionString = "Server=localhost;Database=MyDB;User Id=admin;Password=password123;";
+        private readonly string encryptionKey = "hardcoded_encryption_key_123"; // Another hardcoded secret
         
         // SQL Injection vulnerability
         public User GetUserById(string userId)
@@ -83,6 +86,24 @@ namespace SampleCode
         private void DoSomethingWithUserData(params string[] data)
         {
             // Implementation
+        }
+        
+        // Insecure HTTP communication - SECURITY ISSUE
+        public async Task<string> FetchUserDetailsAsync(int userId)
+        {
+            using var httpClient = new HttpClient();
+            var response = await httpClient.GetStringAsync($"http://api.users.com/user/{userId}"); // HTTP instead of HTTPS
+            return response;
+        }
+        
+        // Weak cryptographic algorithm - SECURITY ISSUE  
+        public string EncryptSensitiveData(string data)
+        {
+            // Using obsolete DES encryption
+            var des = System.Security.Cryptography.DES.Create();
+            des.Key = System.Text.Encoding.UTF8.GetBytes(encryptionKey.Substring(0, 8));
+            // Implementation would be here...
+            return data; // Simplified for demo
         }
     }
     
