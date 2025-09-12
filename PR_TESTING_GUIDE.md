@@ -60,7 +60,6 @@ When this PR is created, the GitHub Actions workflow (`.github/workflows/ai-pr-r
 - **C#** (.cs files)
 - **JavaScript** (.js files)
 - **Python** (.py files)
-- **Java** (.java files)
 
 ## Verification Steps
 
