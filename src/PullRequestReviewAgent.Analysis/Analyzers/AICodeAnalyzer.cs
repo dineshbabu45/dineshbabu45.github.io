@@ -100,13 +100,15 @@ public class AICodeAnalyzer : ICodeAnalyzer
             MaxOutputTokenCount = 4000,
             ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat()
         });
-        _logger.LogInformation("AI complete response {Response}", chatCompletion.Value);
         _logger.LogInformation("AI response for {FileName}: {Response}", fileName, chatCompletion.Value.Content[0].Text);
         var response = chatCompletion.Value.Content[0].Text;
         
         try
         {
-            var analysisResult = JsonSerializer.Deserialize<AIAnalysisResponse>(response);
+            var analysisResult = JsonSerializer.Deserialize<AIAnalysisResponse>(response, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
             return ConvertToCodeIssues(analysisResult, fileName);
         }
         catch (JsonException ex)
