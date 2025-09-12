@@ -103,7 +103,6 @@ class Program
 
         // Register analyzers based on configuration
         var allAnalyzers = services.GetServices<ICodeAnalyzer>();
-         logger.LogInformation("First Analyzer {0}", allAnalyzers[0]);
         if (useAI)
         {
             // Use AI analyzer only
