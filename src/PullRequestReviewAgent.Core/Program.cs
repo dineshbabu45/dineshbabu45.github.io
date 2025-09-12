@@ -106,15 +106,15 @@ class Program
         if (useAI)
         {
             // Use AI analyzer only
+            logger.LogError("AI analyzer found, using AI analyzers");
             var aiAnalyzer = allAnalyzers.FirstOrDefault(a => a.Name == "AI Code Analyzer");
             if (aiAnalyzer != null)
             {
                 // Update OpenAI API key in the configuration
                 if (!string.IsNullOrEmpty(openAIApiKey))
                 {
+                    logger.LogInformation("Using AI-powered analysis with {AnalyzerName}", aiAnalyzer.Name);
                     var aiOptions = services.GetRequiredService<IOptions<AIAnalysisOptions>>();
-                    
-                logger.LogInformation("Using AI-powered analysis Open APi with {OpenAPiKey}", openAIApiKey);
                     aiOptions.Value.OpenAIApiKey = openAIApiKey;
                 }
                 logger.LogInformation("Calling Analyzer");
@@ -131,6 +131,7 @@ class Program
         if (!useAI)
         {
             // Use manual rule-based analyzers
+            logger.LogError("AI analyzer not found, using manual analyzers");
             var manualAnalyzers = allAnalyzers.Where(a => a.Name != "AI Code Analyzer");
             foreach (var analyzer in manualAnalyzers)
             {
