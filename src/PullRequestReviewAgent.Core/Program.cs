@@ -15,7 +15,7 @@ class Program
     static async Task Main(string[] args)
     {
         var host = CreateHostBuilder(args).Build();
-        
+
         try
         {
             await RunAnalysis(host.Services, args);
@@ -40,12 +40,29 @@ class Program
             {
                 services.AddLogging();
                 services.AddSingleton<IPullRequestAnalyzer, PullRequestAnalyzer>();
-                
+
                 // Configure AI Analysis options
                 services.Configure<AIAnalysisOptions>(hostContext.Configuration.GetSection("AIAnalysis"));
-                
+
+                var aiSection = hostContext.Configuration.GetSection("AIAnalysis");
+                Console.WriteLine($"Loaded API Key: {aiSection["OpenAIApiKey"]}");
+
+
                 // Register all analyzers - the application will choose which ones to use
-                services.AddTransient<ICodeAnalyzer, AICodeAnalyzer>();
+                services.AddTransient<AICodeAnalyzer>(sp =>
+                {
+                    var options = sp.GetRequiredService<IOptions<AIAnalysisOptions>>().Value;
+                    var logger = sp.GetRequiredService<ILogger<AICodeAnalyzer>>();
+
+                    // Don’t create AI analyzer if no API key
+                    if (string.IsNullOrEmpty(options.OpenAIApiKey))
+                    {
+                        logger.LogWarning("Skipping AI analyzer because API key is missing");
+                        return null!;
+                    }
+
+                    return new AICodeAnalyzer(Options.Create(options), logger);
+                });
                 services.AddTransient<ICodeAnalyzer, SecurityAnalyzer>();
                 services.AddTransient<ICodeAnalyzer, QualityAnalyzer>();
                 services.AddTransient<ICodeAnalyzer, StyleAnalyzer>();
@@ -77,7 +94,7 @@ class Program
 
         var postComments = args.Contains("--post-comments");
         var useAI = args.Contains("--use-ai") || configuration.GetValue<bool>("AIAnalysis:Enabled", true);
-        
+
         var githubToken = configuration["GITHUB_TOKEN"] ?? Environment.GetEnvironmentVariable("GITHUB_TOKEN");
         var openAIApiKey = configuration["AIAnalysis:OpenAIApiKey"] ?? Environment.GetEnvironmentVariable("OPENAI_API_KEY");
 
@@ -102,21 +119,18 @@ class Program
 
         // Register analyzers based on configuration
         var allAnalyzers = services.GetServices<ICodeAnalyzer>();
-        
+
         if (useAI)
         {
-            // Use AI analyzer only
-            logger.LogError("AI analyzer found, using AI analyzers");
-            var aiAnalyzer = allAnalyzers.FirstOrDefault(a => a.Name == "AI Code Analyzer");
+            //Update OpenAI API key in the configuration
+            if (!string.IsNullOrEmpty(openAIApiKey))
+            {
+                var aiOptions = services.GetRequiredService<IOptions<AIAnalysisOptions>>();
+                aiOptions.Value.OpenAIApiKey = openAIApiKey;
+            }
+            var aiAnalyzer = services.GetService<AICodeAnalyzer>();
             if (aiAnalyzer != null)
             {
-                // Update OpenAI API key in the configuration
-                if (!string.IsNullOrEmpty(openAIApiKey))
-                {
-                    logger.LogInformation("Using AI-powered analysis with {AnalyzerName}", aiAnalyzer.Name);
-                    var aiOptions = services.GetRequiredService<IOptions<AIAnalysisOptions>>();
-                    aiOptions.Value.OpenAIApiKey = openAIApiKey;
-                }
                 logger.LogInformation("Calling Analyzer");
                 prAnalyzer.RegisterAnalyzer(aiAnalyzer);
                 logger.LogInformation("Using AI-powered analysis with {AnalyzerName}", aiAnalyzer.Name);
@@ -127,7 +141,7 @@ class Program
                 useAI = false;
             }
         }
-        
+
         if (!useAI)
         {
             // Use manual rule-based analyzers
@@ -158,12 +172,12 @@ class Program
             {
                 logger.LogInformation("Posting review comments...");
                 await githubService.PostReviewCommentAsync(owner, repo, prNumber, result);
-                
+
                 if (result.Issues.Any(i => i.Severity >= IssueSeverity.Warning))
                 {
                     await githubService.PostLineCommentsAsync(owner, repo, prNumber, result);
                 }
-                
+
                 logger.LogInformation("Review comments posted successfully");
             }
             else
@@ -181,7 +195,7 @@ class Program
     static void OutputResults(AnalysisResult result, ILogger logger)
     {
         var summary = result.Summary;
-        
+
         logger.LogInformation("=== ANALYSIS RESULTS ===");
         logger.LogInformation("Total Issues: {Total}", summary.TotalIssues);
         logger.LogInformation("Critical: {Critical}, Errors: {Errors}, Warnings: {Warnings}, Info: {Info}",
@@ -192,7 +206,7 @@ class Program
         if (result.Issues.Any())
         {
             logger.LogInformation("\n=== ISSUES FOUND ===");
-            
+
             var groupedIssues = result.Issues
                 .GroupBy(i => i.Severity)
                 .OrderByDescending(g => g.Key);
@@ -200,10 +214,10 @@ class Program
             foreach (var severityGroup in groupedIssues)
             {
                 logger.LogInformation("\n{Severity} Issues ({Count}):", severityGroup.Key, severityGroup.Count());
-                
+
                 foreach (var issue in severityGroup.Take(10)) // Limit output
                 {
-                    logger.LogInformation("  {File}:{Line} - {Title}", 
+                    logger.LogInformation("  {File}:{Line} - {Title}",
                         issue.FileName, issue.LineNumber, issue.Title);
                     logger.LogInformation("    {Description}", issue.Description);
                     if (!string.IsNullOrEmpty(issue.Suggestion))
@@ -211,10 +225,10 @@ class Program
                         logger.LogInformation("    💡 {Suggestion}", issue.Suggestion);
                     }
                 }
-                
+
                 if (severityGroup.Count() > 10)
                 {
-                    logger.LogInformation("  ... and {More} more {Severity} issues", 
+                    logger.LogInformation("  ... and {More} more {Severity} issues",
                         severityGroup.Count() - 10, severityGroup.Key);
                 }
             }
