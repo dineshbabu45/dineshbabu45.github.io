@@ -100,12 +100,15 @@ public class AICodeAnalyzer : ICodeAnalyzer
             MaxOutputTokenCount = 4000,
             ResponseFormat = ChatResponseFormat.CreateJsonObjectFormat()
         });
-
+        _logger.LogInformation("AI response for {FileName}: {Response}", fileName, chatCompletion.Value.Content[0].Text);
         var response = chatCompletion.Value.Content[0].Text;
         
         try
         {
-            var analysisResult = JsonSerializer.Deserialize<AIAnalysisResponse>(response);
+            var analysisResult = JsonSerializer.Deserialize<AIAnalysisResponse>(response, new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true
+            });
             return ConvertToCodeIssues(analysisResult, fileName);
         }
         catch (JsonException ex)
@@ -207,6 +210,7 @@ Provide analysis in the specified JSON format.";
     {
         if (response?.Issues == null)
         {
+            _logger.LogError("No Issues Found");
             return new List<CodeIssue>();
         }
 
@@ -274,7 +278,7 @@ Provide analysis in the specified JSON format.";
 public class AIAnalysisOptions
 {
     public string OpenAIApiKey { get; set; } = string.Empty;
-    public string Model { get; set; } = "gpt-4o-mini";
+    public string Model { get; set; } = "gpt-4.1-nano";
     public string? CodingGuidelinesUrl { get; set; }
     public int MaxFileSizeBytes { get; set; } = 50000; // 50KB limit for AI analysis
     public bool EnableBatchAnalysis { get; set; } = true;
