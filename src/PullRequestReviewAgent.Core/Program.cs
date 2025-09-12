@@ -95,6 +95,7 @@ class Program
         }
 
         logger.LogInformation("Starting PR analysis for {Owner}/{Repo}#{Number}", owner, repo, prNumber);
+        logger.LogInformation("AI {useAI}", useAI);
 
         // Set up services
         var githubService = new GitHubService(githubToken, services.GetRequiredService<ILogger<GitHubService>>());
@@ -102,7 +103,7 @@ class Program
 
         // Register analyzers based on configuration
         var allAnalyzers = services.GetServices<ICodeAnalyzer>();
-        
+         logger.LogInformation("First Analyzer {0}", allAnalyzers[0]);
         if (useAI)
         {
             // Use AI analyzer only
