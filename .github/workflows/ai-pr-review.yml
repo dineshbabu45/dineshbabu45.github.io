@@ -31,12 +31,14 @@ jobs:
       - name: Run AI Pull Request Review
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{secrets.OPENAI_API_KEY}}
         run: |
           dotnet run --project src/PullRequestReviewAgent.Core \
             ${{ github.repository_owner }} \
             ${{ github.event.repository.name }} \
             ${{ github.event.pull_request.number }} \
-            --post-comments
+            --post-comments \
+            --use-ai
             
       - name: Upload analysis results
         if: always()

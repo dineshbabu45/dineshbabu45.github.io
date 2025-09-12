@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using PullRequestReviewAgent.Analysis.Analyzers;
 using PullRequestReviewAgent.Analysis.Interfaces;
 using PullRequestReviewAgent.Analysis.Models;
@@ -39,6 +40,12 @@ class Program
             {
                 services.AddLogging();
                 services.AddSingleton<IPullRequestAnalyzer, PullRequestAnalyzer>();
+                
+                // Configure AI Analysis options
+                services.Configure<AIAnalysisOptions>(hostContext.Configuration.GetSection("AIAnalysis"));
+                
+                // Register all analyzers - the application will choose which ones to use
+                services.AddTransient<ICodeAnalyzer, AICodeAnalyzer>();
                 services.AddTransient<ICodeAnalyzer, SecurityAnalyzer>();
                 services.AddTransient<ICodeAnalyzer, QualityAnalyzer>();
                 services.AddTransient<ICodeAnalyzer, StyleAnalyzer>();
@@ -52,10 +59,11 @@ class Program
         // Parse command line arguments
         if (args.Length < 3)
         {
-            logger.LogError("Usage: PullRequestReviewAgent <owner> <repo> <pr-number> [--post-comments]");
-            logger.LogInformation("Example: PullRequestReviewAgent microsoft dotnet 12345 --post-comments");
+            logger.LogError("Usage: PullRequestReviewAgent <owner> <repo> <pr-number> [--post-comments] [--use-ai]");
+            logger.LogInformation("Example: PullRequestReviewAgent microsoft dotnet 12345 --post-comments --use-ai");
             logger.LogInformation("Environment variables:");
             logger.LogInformation("  GITHUB_TOKEN: GitHub personal access token");
+            logger.LogInformation("  OPENAI_API_KEY: OpenAI API key for AI analysis");
             return;
         }
 
@@ -68,12 +76,22 @@ class Program
         }
 
         var postComments = args.Contains("--post-comments");
+        var useAI = args.Contains("--use-ai") || configuration.GetValue<bool>("AIAnalysis:Enabled", true);
+        
         var githubToken = configuration["GITHUB_TOKEN"] ?? Environment.GetEnvironmentVariable("GITHUB_TOKEN");
+        var openAIApiKey = configuration["AIAnalysis:OpenAIApiKey"] ?? Environment.GetEnvironmentVariable("OPENAI_API_KEY");
 
         if (string.IsNullOrEmpty(githubToken))
         {
             logger.LogError("GitHub token is required. Set GITHUB_TOKEN environment variable or configuration.");
             return;
+        }
+
+        if (useAI && string.IsNullOrEmpty(openAIApiKey))
+        {
+            logger.LogWarning("OpenAI API key not found. Falling back to manual analyzers.");
+            logger.LogInformation("Set OPENAI_API_KEY environment variable or AIAnalysis:OpenAIApiKey in config for AI analysis.");
+            useAI = false;
         }
 
         logger.LogInformation("Starting PR analysis for {Owner}/{Repo}#{Number}", owner, repo, prNumber);
@@ -82,12 +100,44 @@ class Program
         var githubService = new GitHubService(githubToken, services.GetRequiredService<ILogger<GitHubService>>());
         var prAnalyzer = services.GetRequiredService<IPullRequestAnalyzer>();
 
-        // Register all analyzers
-        var analyzers = services.GetServices<ICodeAnalyzer>();
-        foreach (var analyzer in analyzers)
+        // Register analyzers based on configuration
+        var allAnalyzers = services.GetServices<ICodeAnalyzer>();
+        
+        if (useAI)
         {
-            prAnalyzer.RegisterAnalyzer(analyzer);
-            logger.LogInformation("Registered analyzer: {AnalyzerName}", analyzer.Name);
+            // Use AI analyzer only
+            logger.LogError("AI analyzer found, using AI analyzers");
+            var aiAnalyzer = allAnalyzers.FirstOrDefault(a => a.Name == "AI Code Analyzer");
+            if (aiAnalyzer != null)
+            {
+                // Update OpenAI API key in the configuration
+                if (!string.IsNullOrEmpty(openAIApiKey))
+                {
+                    logger.LogInformation("Using AI-powered analysis with {AnalyzerName}", aiAnalyzer.Name);
+                    var aiOptions = services.GetRequiredService<IOptions<AIAnalysisOptions>>();
+                    aiOptions.Value.OpenAIApiKey = openAIApiKey;
+                }
+                logger.LogInformation("Calling Analyzer");
+                prAnalyzer.RegisterAnalyzer(aiAnalyzer);
+                logger.LogInformation("Using AI-powered analysis with {AnalyzerName}", aiAnalyzer.Name);
+            }
+            else
+            {
+                logger.LogError("AI analyzer not found, falling back to manual analyzers");
+                useAI = false;
+            }
+        }
+        
+        if (!useAI)
+        {
+            // Use manual rule-based analyzers
+            logger.LogError("AI analyzer not found, using manual analyzers");
+            var manualAnalyzers = allAnalyzers.Where(a => a.Name != "AI Code Analyzer");
+            foreach (var analyzer in manualAnalyzers)
+            {
+                prAnalyzer.RegisterAnalyzer(analyzer);
+                logger.LogInformation("Registered manual analyzer: {AnalyzerName}", analyzer.Name);
+            }
         }
 
         try
