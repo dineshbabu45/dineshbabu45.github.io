@@ -61,7 +61,6 @@ public class AICodeAnalyzer : ICodeAnalyzer
             {
                 _logger.LogError(ex, "Failed to analyze file {FileName} with AI", file.Key);
                 
-                // Add an error issue if AI analysis fails
                 issues.Add(new CodeIssue
                 {
                     FileName = file.Key,
