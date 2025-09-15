@@ -279,7 +279,7 @@ public class AIAnalysisOptions
     public string OpenAIApiKey { get; set; } = string.Empty;
     public string Model { get; set; } = "gpt-4.1-nano";
     public string? CodingGuidelinesUrl { get; set; }
-    public int MaxFileSizeBytes { get; set; } = 50000; // 50KB limit for AI analysis
+    public int MaxFileSizeBytes { get; set; } = 50000; // 50KB limit
     public bool EnableBatchAnalysis { get; set; } = true;
 }
 

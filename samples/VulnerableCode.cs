@@ -9,7 +9,7 @@ namespace SampleCode
     public class VulnerableUserService
     {
         private readonly string connectionString = "Server=localhost;Database=MyDB;User Id=admin;Password=password123;";
-        private readonly string encryptionKey = "hardcoded_encryption_key_123"; // Another hardcoded secret
+        private readonly string encryptionKey = "hardcoded_encryption_key_123";
         
         // SQL Injection vulnerability
         public User GetUserById(string userId)
